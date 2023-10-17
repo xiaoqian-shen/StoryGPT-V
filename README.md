@@ -4,7 +4,7 @@ Official PyTorch implementation for the paper
 
 > **Marrying Latent Diffusion and Language Model for Story Visualization**
 
-## Installation
+## rocket: Installation
 
 Environment Setup
 
