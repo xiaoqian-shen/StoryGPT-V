@@ -1,6 +1,6 @@
 # StoryVL
 
-Official PyTorch implementation for 
+Official PyTorch implementation for the paper
 
 > **Marrying Latent Diffusion and Language Model for Story Visualization**
 
