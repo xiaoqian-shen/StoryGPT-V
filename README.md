@@ -12,9 +12,9 @@ conda env create -f environment.yaml
 
 ## Data
 
-[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf)
+[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf): [Google Drive]([https://drive.google.com/file/d/11Io1_BufAayJ1BpdxxV2uJUvCcirbrNc/view?usp=sharing](https://drive.google.com/file/d/1kG4esNwabJQPWqadSDaugrlF4dRaV33_/view?usp=sharing))
 
-[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf)
+[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf): [Google Drive](https://drive.google.com/file/d/11Io1_BufAayJ1BpdxxV2uJUvCcirbrNc/view?usp=sharing)
 
 ## Inference
 
