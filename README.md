@@ -65,7 +65,7 @@ bash train_gill.sh DATASET
 
 First prepare finetuned weight of BLIP2 on FlintStonesSV and PororoSV. Finetune BLIP2 by yourself or use our provided finetuned checkpoint `captioner.pth` under each dataset folder.
 
-Reproduce results using our model checkpoint:
+Reproduce results using our model checkpoints:
 
 FlintStonesSV: [[First Stage]]() [[Second Stage]]()
 
