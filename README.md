@@ -23,6 +23,14 @@ pip install -e .
 cp -r lavis eval/lavis
 ```
 
+## TODO
+
+- [x] Training code
+- [x] Evaluation code
+- [ ] Finetuned BLIP2 checkpoints for Evaluation
+- [ ] Datasets
+- [ ] Model checkpoints
+
 ## Data
 
 We provide the segmentation masks obtained from [SAM](https://github.com/facebookresearch/segment-anything) and upscaled frames by [model](nitro/txt2img-f8-large).
