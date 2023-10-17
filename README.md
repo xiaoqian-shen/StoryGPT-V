@@ -6,8 +6,20 @@ Official PyTorch implementation for
 
 ## Installation
 
+Environment Setup
+
 ```
 conda env create -f environment.yaml
+```
+
+External Package
+
+```
+# Use Lavis BLIP2 for Text-Image alignment evaluation
+git clone https://github.com/salesforce/LAVIS.git
+cd LAVIS
+pip install -e .
+cp -r lavis eval/lavis
 ```
 
 ## Data
