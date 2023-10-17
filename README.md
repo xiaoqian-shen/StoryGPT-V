@@ -29,9 +29,9 @@ We provide the segmentation masks obtained from [SAM](https://github.com/faceboo
 
 Download dataset in below links and put them under `data/flintstones` and `data/pororo`
 
-[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf): [Google Drive]()
+[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf): [[Google Drive]]()
 
-[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf): [Google Drive]()
+[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf): [[Google Drive]]()
 
 ## Training
 
