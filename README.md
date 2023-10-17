@@ -23,15 +23,7 @@ pip install -e .
 cp -r lavis eval/lavis
 ```
 
-## TODO
-
-- [x] Training code
-- [x] Evaluation code
-- [ ] Finetuned BLIP2 checkpoints for Evaluation
-- [ ] Datasets
-- [ ] Model checkpoints
-
-## Data
+## :one: Data
 
 We provide the segmentation masks obtained from [SAM](https://github.com/facebookresearch/segment-anything) and upscaled frames by [model](nitro/txt2img-f8-large).
 
@@ -41,7 +33,7 @@ Download dataset in below links and put them under `data/flintstones` and `data/
 
 [PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf): [[Google Drive]]()
 
-## Training
+## :two: Training
 
 First Stage: Latend Diffusion Finetune
 
@@ -61,7 +53,7 @@ Second Stage: Align LLM with Latent Diffusion
 bash train_gill.sh DATASET
 ```
 
-## Inference
+## :three: Inference
 
 First prepare finetuned weight of BLIP2 on FlintStonesSV and PororoSV. Finetune BLIP2 by yourself or use our provided finetuned checkpoint `captioner.pth` under each dataset folder.
 
@@ -79,7 +71,15 @@ bash eval.sh DATASET CKPT_PATH
 bash eval_llm.sh DATASET 1st_CKPT 2nd_CKPT
 ```
 
-## Reference
+## TODO
+
+- [x] Training code
+- [x] Evaluation code
+- [ ] Finetuned BLIP2 checkpoints for Evaluation
+- [ ] Datasets
+- [ ] Model checkpoints
+
+## :closed_book: Reference
 
 Related repos [BLIP2](https://github.com/salesforce/LAVIS), [FastComposer](https://github.com/mit-han-lab/fastcomposer), [GILL](https://github.com/kohjingyu/gill), [SAM](https://github.com/facebookresearch/segment-anything)
 
