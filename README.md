@@ -59,9 +59,9 @@ First prepare finetuned weight of BLIP2 on FlintStonesSV and PororoSV. Finetune 
 
 Reproduce results using our model checkpoint:
 
-FlintStonesSV: [First Stage]() [Second Stage]()
+FlintStonesSV: [[First Stage]]() [[Second Stage]]()
 
-PororoSV: [First Stage]() [Second Stage]()
+PororoSV: [[First Stage]]() [[Second Stage]]()
 
 ```
 # First Stage Evaluation
