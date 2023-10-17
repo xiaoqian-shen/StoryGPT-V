@@ -74,6 +74,7 @@ PororoSV: [[First Stage]]() [[Second Stage]]()
 ```
 # First Stage Evaluation
 bash eval.sh DATASET CKPT_PATH
+
 # Second Stage Evaluation
 bash eval_llm.sh DATASET 1st_CKPT 2nd_CKPT
 ```
