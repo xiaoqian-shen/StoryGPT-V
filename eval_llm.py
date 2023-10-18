@@ -127,7 +127,6 @@ def main():
 
     if args.dataset == 'flintstones':
         demo_dataset = EvalStoryDataset(
-            test_reference_folder=args.test_reference_folder,
             tokenizer=tokenizer,
             object_transforms=object_transforms,
             device=accelerator.device,
@@ -138,7 +137,6 @@ def main():
         )
     else:
         demo_dataset = EvalPororoStoryDataset(
-            test_reference_folder=args.test_reference_folder,
             tokenizer=tokenizer,
             object_transforms=object_transforms,
             device=accelerator.device,

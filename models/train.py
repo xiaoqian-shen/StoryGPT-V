@@ -127,32 +127,8 @@ def train():
             torch.load(Path(args.load_model) / "pytorch_model.bin", map_location="cpu")
         )
     
-    if args.lora == 'True':
-        model.unet.requires_grad_(False)
-        model.unet.to(torch.float32)
-        # Set correct lora layers
-        lora_attn_procs = {}
-        for name in model.unet.attn_processors.keys():
-            cross_attention_dim = None if name.endswith("attn1.processor") else model.unet.config.cross_attention_dim
-            if name.startswith("mid_block"):
-                hidden_size = model.unet.config.block_out_channels[-1]
-            elif name.startswith("up_blocks"):
-                block_id = int(name[len("up_blocks.")])
-                hidden_size = list(reversed(model.unet.config.block_out_channels))[block_id]
-            elif name.startswith("down_blocks"):
-                block_id = int(name[len("down_blocks.")])
-                hidden_size = model.unet.config.block_out_channels[block_id]
-
-            lora_attn_procs[name] = LoRAAttnProcessor(
-                hidden_size=hidden_size,
-                cross_attention_dim=cross_attention_dim,
-                rank=4,
-            )
-
-        model.unet.set_attn_processor(lora_attn_procs)
-    else:
-        model.unet.requires_grad_(True)
-        model.unet.to(torch.float32)
+    model.unet.requires_grad_(True)
+    model.unet.to(torch.float32)
 
     # if args.text_image_linking in ["postfuse"] and not args.freeze_postfuse_module:
     model.postfuse_module.requires_grad_(True)
@@ -428,7 +404,7 @@ def train():
                     accelerator.save_state(save_path)
                     EXP_NAME = args.output_dir.split('/')[-1]
                     EXP_ITER = global_step
-                    os.system(f'sbatch -o logs/slurm/{EXP_NAME}_{EXP_ITER}.log --export=EXP_NAME={EXP_NAME},EXP_ITER={EXP_ITER},LORA={args.lora},HISTORY={args.history},RES={args.train_resolution},COREF={args.coref},DATASET={args.dataset} run_eval.sh')
+                    os.system(f'sbatch -o logs/slurm/{EXP_NAME}_{EXP_ITER}.log --export=EXP_NAME={EXP_NAME},EXP_ITER={EXP_ITER},RES={args.train_resolution},DATASET={args.dataset} run_eval.sh')
                     logger.info(f"Saved state to {save_path}")
                     if args.keep_only_last_checkpoint:
                         # Remove all other checkpoints

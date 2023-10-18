@@ -37,7 +37,6 @@ def prepare_image_token_idx(image_token_mask, max_num_objects):
 class EvalStoryDataset(object):
     def __init__(
         self,
-        test_reference_folder,
         tokenizer,
         object_transforms,
         image_token="<|image|>",
@@ -47,7 +46,6 @@ class EvalStoryDataset(object):
         ref_image='text',
         story_len=4,
     ) -> None:
-        self.test_reference_folder = test_reference_folder
         self.tokenizer = tokenizer
         self.image_token = image_token
         self.object_transforms = object_transforms
@@ -100,9 +98,6 @@ class EvalStoryDataset(object):
 
         self.image_ids = [tid for tid in image_ids if tid in self.followings]
         self.annotations = json.load(open(os.path.join(self.root, 'cleaned_annotations.json'), 'r'))
-
-    def set_reference_folder(self, reference_folder):
-        self.test_reference_folder = reference_folder
 
     def set_image_ids(self, image_ids=None):
         self.image_ids = image_ids
@@ -264,7 +259,6 @@ def find_start_match(s1, s2):
 class EvalPororoStoryDataset(object):
     def __init__(
         self,
-        test_reference_folder,
         tokenizer,
         object_transforms,
         image_token="<|image|>",
@@ -273,7 +267,6 @@ class EvalPororoStoryDataset(object):
         root=None,
         ref_image='text',
     ) -> None:
-        self.test_reference_folder = test_reference_folder
         self.tokenizer = tokenizer
         self.image_token = image_token
         self.object_transforms = object_transforms
@@ -294,9 +287,6 @@ class EvalPororoStoryDataset(object):
 
         self.image_ids = [tid for tid in image_ids if tid in self.followings]
         self.annotations = json.load(open(os.path.join(self.root, 'cleaned_annotations.json'), 'r'))
-
-    def set_reference_folder(self, reference_folder):
-        self.test_reference_folder = reference_folder
 
     def set_image_ids(self, image_ids=None):
         self.image_ids = image_ids
@@ -465,7 +455,6 @@ class EvalPororoStoryDataset(object):
 class EvalDataset(object):
     def __init__(
         self,
-        test_reference_folder,
         tokenizer,
         object_transforms,
         image_token="<|image|>",
@@ -474,7 +463,6 @@ class EvalDataset(object):
         root=None,
         ref_image='text',
     ) -> None:
-        self.test_reference_folder = test_reference_folder
         self.tokenizer = tokenizer
         self.image_token = image_token
         self.object_transforms = object_transforms
@@ -485,9 +473,6 @@ class EvalDataset(object):
         self.device = device
         self.image_ids = None
         self.ref_image = ref_image
-
-    def set_reference_folder(self, reference_folder):
-        self.test_reference_folder = reference_folder
 
     def set_image_ids(self, image_ids=None):
         self.image_ids = image_ids

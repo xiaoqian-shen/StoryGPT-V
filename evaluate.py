@@ -125,7 +125,6 @@ def main():
         following_cache = pickle.load(f)
     
     demo_dataset = EvalDataset(
-            test_reference_folder=args.test_reference_folder,
             tokenizer=tokenizer,
             object_transforms=object_transforms,
             device=accelerator.device,

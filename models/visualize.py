@@ -186,7 +186,7 @@ def main():
                     ).images
                     heat_map = tc.compute_global_heat_map(prompt=caption)
                     words = list(set([segment['word'] for segment in segments]))
-                    # words = caption.split(' ')
+                    words = caption.split(' ')
                     images[0].save(f'{args.output_dir}/{image_id}.png')
                     for word in words:
                         try:
@@ -196,7 +196,7 @@ def main():
                                     continue
                                 if word == 'wilma':
                                     idx = idx // 2
-                                word_heat_map.plot_overlay(images[0], word_idx=idx, caption=caption, out_file=f'{args.output_dir}/{image_id}_{word}_{idx}.png')
+                                word_heat_map.plot_overlay(images[0], word_idx=idx, caption=caption, out_file=f'{args.output_dir}/{image_id}_{idx}_{word}.png')
                         except:
                             continue
         # break

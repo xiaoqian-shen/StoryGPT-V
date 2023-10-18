@@ -502,12 +502,6 @@ def parse_args(default=False):
     )
 
     parser.add_argument(
-        "--test_reference_folder",
-        type=str,
-        help="folder containing reference images for testing. Name of the image should be ordered index. e.g. 0.png, 1.png, 2.png, etc.",
-    )
-
-    parser.add_argument(
         "--load_merged_lora_model",
         action="store_true",
     )
@@ -656,21 +650,6 @@ def parse_args(default=False):
         "--ref_image",
         type=str,
         default='text'
-    )
-
-    parser.add_argument(
-        "--history",
-        default=False
-    )
-
-    parser.add_argument(
-        "--lora",
-        default=False
-    )
-
-    parser.add_argument(
-        "--coref",
-        default=False
     )
 
     parser.add_argument(
