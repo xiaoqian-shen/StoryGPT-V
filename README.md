@@ -10,7 +10,7 @@ Environment Setup
 
 ```
 conda env create -f environment.yaml
-conda activate storyvl
+conda activate StoryVL
 ```
 
 External Package
