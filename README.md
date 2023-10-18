@@ -25,7 +25,7 @@ cp -r lavis eval/lavis
 
 ## :one: Data
 
-We provide the segmentation masks obtained from [SAM](https://github.com/facebookresearch/segment-anything) and upscaled frames by [model](nitro/txt2img-f8-large).
+We provide the segmentation masks obtained from [SAM](https://github.com/facebookresearch/segment-anything) and upscaled frames by [Super-res model](nitro/txt2img-f8-large).
 
 Download dataset in below links and put them under `data/flintstones` and `data/pororo`
 
