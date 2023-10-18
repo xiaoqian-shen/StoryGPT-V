@@ -4,7 +4,7 @@ current_month=$(date +%m)
 current_day=$(date +%d)
 current_hour=$(date +%H)
 run_time=${current_month}-${current_day}-${current_hour}
-export WANDB_NAME=${run_time}-${DATASET}-min1_mask3_text5
+export WANDB_NAME=${run_time}-${DATASET}
 export WANDB_DISABLE_SERVICE=true
 export CUDA_VISIBLE_DEVICES="0"
 
@@ -44,7 +44,6 @@ accelerate launch \
     --enable_reg_loss \
     --train_image_encoder \
     --image_encoder_trainable_layers 2 \
-    --text_only_prob 0.5 \
     --min_num_objects 1 \
     --mask_loss \
     --mask_loss_prob 0.3 \
