@@ -24,8 +24,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-    <title>Academic Project Page</title>
-    <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+    <title>StoryVL</title>
+    <link rel="icon" type="image/x-icon" href="static/images/icon.jpeg">
     <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
           rel="stylesheet">
 
@@ -43,6 +43,40 @@
     <script src="static/js/bulma-carousel.min.js"></script>
     <script src="static/js/bulma-slider.min.js"></script>
     <script src="static/js/index.js"></script>
+
+    <style>
+        .hidden {
+            display: none;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .text-button {
+            border: none;
+            background: none;
+            padding: 2px 2px;
+            font-size: inherit;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+            /*margin-right: 1px;*/
+        }
+
+        .text-button#first { /* Select the button with ID "fred" */
+            background: #007bff; /* Blue color as initialization */
+            color: white; /* White text color as initialization */
+        }
+
+        .text-button.active {
+            background: #007bff; /* Blue color for the active state */
+            color: white; /* White text color for the active state */
+        }
+
+        .text-button:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 
@@ -52,50 +86,51 @@
         <div class="container is-max-desktop">
             <div class="columns is-centered">
                 <div class="column has-text-centered">
-                    <h1 class="title is-1 publication-title">Marrying Latent Diffusion and Language Model for Story Visualization</h1>
+                    <h1 class="title is-1 publication-title">Marrying Latent Diffusion and Language Model for Story
+                        Visualization</h1>
                     <div class="is-size-5 publication-authors">
                         <!-- Paper authors -->
-<!--                        <span class="author-block">-->
-<!--                <a href="FIRST AUTHOR PERSONAL LINK" target="_blank">First Author</a><sup>*</sup>,</span>-->
-<!--                        <span class="author-block">-->
-<!--                  <a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Second Author</a><sup>*</sup>,</span>-->
-<!--                        <span class="author-block">-->
-<!--                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Third Author</a>-->
-<!--                  </span>-->
+                        <!--                        <span class="author-block">-->
+                        <!--                <a href="FIRST AUTHOR PERSONAL LINK" target="_blank">First Author</a><sup>*</sup>,</span>-->
+                        <!--                        <span class="author-block">-->
+                        <!--                  <a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Second Author</a><sup>*</sup>,</span>-->
+                        <!--                        <span class="author-block">-->
+                        <!--                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Third Author</a>-->
+                        <!--                  </span>-->
                     </div>
 
                     <div class="is-size-5 publication-authors">
                         <span class="author-block">Anonymous Submission</span>
-<!--                        <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>-->
+                        <!--                        <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>-->
                     </div>
 
                     <div class="column has-text-centered">
                         <div class="publication-links">
                             <!-- Arxiv PDF link -->
-<!--                            <span class="link-block">-->
-<!--                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"-->
-<!--                           class="external-link button is-normal is-rounded is-dark">-->
-<!--                        <span class="icon">-->
-<!--                          <i class="fas fa-file-pdf"></i>-->
-<!--                        </span>-->
-<!--                        <span>Paper</span>-->
-<!--                      </a>-->
-<!--                    </span>-->
+                            <!--                            <span class="link-block">-->
+                            <!--                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"-->
+                            <!--                           class="external-link button is-normal is-rounded is-dark">-->
+                            <!--                        <span class="icon">-->
+                            <!--                          <i class="fas fa-file-pdf"></i>-->
+                            <!--                        </span>-->
+                            <!--                        <span>Paper</span>-->
+                            <!--                      </a>-->
+                            <!--                    </span>-->
 
                             <!-- Supplementary PDF link -->
-<!--                            <span class="link-block">-->
-<!--                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"-->
-<!--                         class="external-link button is-normal is-rounded is-dark">-->
-<!--                      <span class="icon">-->
-<!--                        <i class="fas fa-file-pdf"></i>-->
-<!--                      </span>-->
-<!--                      <span>Supplementary</span>-->
-<!--                    </a>-->
-<!--                  </span>-->
+                            <!--                            <span class="link-block">-->
+                            <!--                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"-->
+                            <!--                         class="external-link button is-normal is-rounded is-dark">-->
+                            <!--                      <span class="icon">-->
+                            <!--                        <i class="fas fa-file-pdf"></i>-->
+                            <!--                      </span>-->
+                            <!--                      <span>Supplementary</span>-->
+                            <!--                    </a>-->
+                            <!--                  </span>-->
 
                             <!-- Github link -->
                             <span class="link-block">
-                    <a href="https://github.com/YOUR REPO HERE" target="_blank"
+                    <a href="https://anonymous.4open.science/r/StoryVL-anony" target="_blank"
                        class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="fab fa-github"></i>
@@ -105,15 +140,15 @@
                 </span>
 
                             <!-- ArXiv abstract Link -->
-<!--                            <span class="link-block">-->
-<!--                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"-->
-<!--                     class="external-link button is-normal is-rounded is-dark">-->
-<!--                  <span class="icon">-->
-<!--                    <i class="ai ai-arxiv"></i>-->
-<!--                  </span>-->
-<!--                  <span>arXiv</span>-->
-<!--                </a>-->
-<!--              </span>-->
+                            <!--                            <span class="link-block">-->
+                            <!--                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"-->
+                            <!--                     class="external-link button is-normal is-rounded is-dark">-->
+                            <!--                  <span class="icon">-->
+                            <!--                    <i class="ai ai-arxiv"></i>-->
+                            <!--                  </span>-->
+                            <!--                  <span>arXiv</span>-->
+                            <!--                </a>-->
+                            <!--              </span>-->
                         </div>
                     </div>
                 </div>
@@ -148,8 +183,22 @@
                 <h2 class="title is-3">Abstract</h2>
                 <div class="content has-text-justified">
                     <p>
-                        Recently generative models demonstrate impressive capabilities in crafting realistic and visually pleasing images based on textual prompts. Nevertheless, a significant challenge remains in utilizing these models for the more intricate task of visualizing stories. This involves understanding natural references i.e., he, she, or they, from text descriptions and maintaining coherence in characters and backgrounds across different frames, which indicates a powerful text-to-image model alone struggles to handle such task. Yet, the emerging Large Language Model (LLM) showcases robust reasoning abilities to navigate through ambiguous references and process extensive sequences. Therefore, our goal is to leverage the merits of both models to produce images with consistent and high fidelity characters for story descriptions.
-Initially, we supervise the cross-attention map of latent diffusion (LDM) with segmentation masks of characters for to enhance the accuracy and faithfulness of character generation. In the second stage, we enable a mapping from the output of LLM to synchronize with the input space of the first stage LDM. This harnesses the reasoning ability of LLM to address unambiguous references and comprehension capability to memorize the context. We compare with SoTA on two visual story generation benchmarks. Our model reports superior quantitative results and consistently generates characters with remarkable fidelity.
+                        Recently generative models demonstrate impressive capabilities in crafting realistic and
+                        visually pleasing images based on textual prompts. Nevertheless, a significant challenge remains
+                        in utilizing these models for the more intricate task of visualizing stories. This involves
+                        understanding natural references i.e., he, she, or they, from text descriptions and maintaining
+                        coherence in characters and backgrounds across different frames, which indicates a powerful
+                        text-to-image model alone struggles to handle such task. Yet, the emerging Large Language Model
+                        (LLM) showcases robust reasoning abilities to navigate through ambiguous references and process
+                        extensive sequences. Therefore, our goal is to leverage the merits of both models to produce
+                        images with consistent and high fidelity characters for story descriptions.
+                        Initially, we supervise the cross-attention map of latent diffusion (LDM) with segmentation
+                        masks of characters for to enhance the accuracy and faithfulness of character generation. In the
+                        second stage, we enable a mapping from the output of LLM to synchronize with the input space of
+                        the first stage LDM. This harnesses the reasoning ability of LLM to address unambiguous
+                        references and comprehension capability to memorize the context. We compare with SoTA on two
+                        visual story generation benchmarks. Our model reports superior quantitative results and
+                        consistently generates characters with remarkable fidelity.
                     </p>
                 </div>
             </div>
@@ -163,6 +212,7 @@ Initially, we supervise the cross-attention map of latent diffusion (LDM) with s
 <section class="hero is-small">
     <div class="columns is-centered has-text-centered">
         <div class="column is-three-fifths">
+            <h2 class="title is-3">FlintStonesSV</h2>
             <div class="container">
                 <div id="results-carousel" class="carousel results-carousel">
                     <div class="item">
@@ -201,13 +251,116 @@ Initially, we supervise the cross-attention map of latent diffusion (LDM) with s
 <section class="hero is-small">
     <div class="columns is-centered has-text-centered">
         <div class="column is-three-fifths">
+            <h2 class="title is-3">PororoSV</h2>
             <div class="container">
-                <h2 class="title is-3">Cross Attention Visualization</h2>
-
+                <div id="results-carousel" class="carousel results-carousel">
+                    <div class="item">
+                        <!-- Your image here -->
+                        <img src="static/images/flintstones1.png" width="600"/>
+                    </div>
+                    <div class="item">
+                        <img src="static/images/flintstones2.png" width="600"/>
+                    </div>
+                    <div class="item">
+                        <img src="static/images/flintstones3.png" width="600"/>
+                    </div>
+                    <div class="item">
+                        <img src="static/images/flintstones4.png" width="600"/>
+                    </div>
+                    <div class="item">
+                        <img src="static/images/flintstones5.png" width="600"/>
+                    </div>
+                    <div class="item">
+                        <img src="static/images/flintstones6.png" width="600"/>
+                    </div>
+                    <div class="item">
+                        <img src="static/images/flintstones7.png" width="600"/>
+                    </div>
+                    <div class="item">
+                        <img src="static/images/flintstones8.png" width="600"/>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+<br><br>
+
+<section class="hero is-small">
+    <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+            <h2 class="title is-3">Cross Attention Visualization</h2>
+            <div class="container">
+                <br>
+                <h2 class="title is-5">Attention Map of Each Token</h2>
+                <p id="sentence">
+                    Caption:
+                    <button id="first" class="text-button" onmouseover="showImage('fred1')">
+                        Fred
+                    </button>
+                    <button id="and" class="text-button" onmouseover="showImage('and')">and</button>
+                    <button id="barney1" class="text-button" onmouseover="showImage('barney1')">Barney</button>
+                    <button id="are1" class="text-button" onmouseover="showImage('are1')">are</button>
+                    <button id="standing" class="text-button" onmouseover="showImage('standing')">standing</button>
+                    <button id="in" class="text-button" onmouseover="showImage('in')">in</button>
+                    <button id="the" class="text-button" onmouseover="showImage('the')">the</button>
+                    <button id="room" class="text-button" onmouseover="showImage('room')">room.</button>
+                    <button id="fred2" class="text-button" onmouseover="showImage('fred2')">Fred</button>
+                    <button id="is" class="text-button" onmouseover="showImage('is')">is</button>
+                    <button id="talking" class="text-button" onmouseover="showImage('talking')">talking</button>
+                    <button id="to" class="text-button" onmouseover="showImage('to')">to</button>
+                    <button id="barney2" class="text-button" onmouseover="showImage('barney2')">Barney.</button>
+                    <button id="they" class="text-button" onmouseover="showImage('they')">They</button>
+                    <button id="are2" class="text-button" onmouseover="showImage('are2')">are</button>
+                    <button id="both" class="text-button" onmouseover="showImage('both')">both</button>
+                    <button id="wearing" class="text-button" onmouseover="showImage('wearing')">wearing</button>
+                    <button id="hats" class="text-button" onmouseover="showImage('hats')">hats.</button>
+                </p>
+                <br>
+                <div align="center">
+                   <img id="image" class="hidden" src="" alt="Corresponding Image" width="800px">
+                </div>
+
+                <br>
+                <h2 class="title is-5">Attention Map of Characters</h2>
+                <div class="item">
+                    <img src="static/images/attn.png" width="800"/>
+                </div>
+            </div>
+            </div>
+        </div>
+</section>
+
+<script>
+    image.src = "static/images/attn/fred1.png";
+    image.style.display = "block";
+    var activeButton = null;
+    function showImage(word) {
+        var image = document.getElementById("image");
+
+        image.src = "static/images/attn/" + word + ".png";
+        image.style.display = "block";
+        var fredButton = document.getElementById("first");
+        if (word !== "fred1") {
+            fredButton.style.background = "none";
+            fredButton.style.color = "black";
+        } else {
+            fredButton.style.background = "#007bff";
+            fredButton.style.color = "white";
+        }
+        if (activeButton) {
+                activeButton.classList.remove("active");
+            }
+            activeButton = document.getElementById(word.toLowerCase());
+            activeButton.classList.add("active");
+    }
+
+    function hideImage() {
+        var image = document.getElementById("image");
+        image.style.display = "none";
+    }
+</script>
 
 <!-- Youtube video -->
 <!--<section class="hero is-small">-->
@@ -283,8 +436,7 @@ Initially, we supervise the cross-attention map of latent diffusion (LDM) with s
 
                     <p>
                         This page was built using the <a
-                            href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic
-                        Project Page Template</a>.
+                            href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">StoryVL</a>.
                         You are free to borrow the of this website, we just ask that you link back to this page in the
                         footer. <br> This website is licensed under a <a rel="license"
                                                                          href="http://creativecommons.org/licenses/by-sa/4.0/"
