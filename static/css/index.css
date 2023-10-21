@@ -71,11 +71,12 @@ body {
 }
 
 .publication-authors a {
-   color: hsl(204, 86%, 53%) !important;
+   color: #aaa !important;
+   text-decoration: underline;
 }
 
 .publication-authors a:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 .author-block {
@@ -133,5 +134,26 @@ body {
   font-size: smaller;
 }
 
+section.banner {
+    background-image: url(../images/overlay.png), url(../images/banner.webp);
+    color: #aaa;
+    background-position: center top;
+    background-size: cover;
+    background-attachment: scroll;
+}
 
+.publication-title {
+    color: #fff;
+}
 
+.card-image.js-modal-trigger {
+    cursor: pointer;
+}
+.results-carousel .card {
+    margin: 20px;
+    overflow: hidden;
+}
+
+.column .card {
+    height: 100%;
+}
