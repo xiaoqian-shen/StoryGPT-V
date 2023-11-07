@@ -456,7 +456,6 @@ class StoryModel(nn.Module):
         image_token_mask = batch["image_token_mask"]
         object_pixel_values = batch["object_pixel_values"]
         num_objects = batch["num_objects"]
-        pre_pixel_values = batch["pre_pixel_values"] if self.args.history == 'True' else None
 
         vae_dtype = self.vae.parameters().__next__().dtype
         vae_input = pixel_values.to(vae_dtype)
@@ -479,7 +478,6 @@ class StoryModel(nn.Module):
 
         # (bsz, max_num_objects, num_image_tokens, dim)
         object_embeds = self.image_encoder(object_pixel_values)
-        pre_pixel_embeds = self.image_encoder(pre_pixel_values.unsqueeze(1)) if self.args.history == 'True' else None
 
         # (bsz, seq_len, dim)
         encoder_hidden_states = self.text_encoder(input_ids)[0]  # (bsz, seq_len, dim)
@@ -490,8 +488,6 @@ class StoryModel(nn.Module):
             image_token_mask,
             num_objects,
         )
-        if self.args.history == 'True':
-            encoder_hidden_states[:,1] = torch.squeeze(pre_pixel_embeds,(1,2))
 
         # Get the target for loss depending on the prediction type
         if noise_scheduler.config.prediction_type == "epsilon":
