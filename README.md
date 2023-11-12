@@ -1,4 +1,4 @@
-# StoryVL
+# StoryGPT-V
 
 Official PyTorch implementation for the paper
 
