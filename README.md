@@ -25,13 +25,11 @@ cp -r lavis eval/lavis
 
 ## :one: Data
 
-We provide the segmentation masks obtained from [SAM](https://github.com/facebookresearch/segment-anything) and upscaled frames by [Super-res model](nitro/txt2img-f8-large).
-
 Download dataset in below links and put them under `data/flintstones` and `data/pororo`
 
-[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf): [[Google Drive]]()
+[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf)
 
-[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf): [[Google Drive]]()
+[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf)
 
 ## :two: Training
 
@@ -55,7 +53,7 @@ bash train_gill.sh DATASET
 
 ## :three: Inference
 
-First prepare finetuned weight of BLIP2 on FlintStonesSV and PororoSV. Finetune BLIP2 by yourself or use our provided finetuned checkpoint `captioner.pth` under each dataset folder.
+First prepare finetuned weight of BLIP2 on FlintStonesSV and PororoSV. Finetune BLIP2 by yourself or use our provided finetuned checkpoint `captioner.pth` under each dataset folder: [BLIP2 FlintStonesSV](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/eval/captioner.pth), [BLIP2 PororoSV](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/eval/captioner.pth).
 
 Reproduce results using our model checkpoints:
 
