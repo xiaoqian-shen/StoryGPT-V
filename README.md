@@ -25,7 +25,7 @@ cp -r lavis eval/lavis
 
 ## :one: Data
 
-Download dataset in below links and put them under `data/flintstones` and `data/pororo`
+Download dataset and put them under `data/flintstones` and `data/pororo`
 
 [FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf)
 
