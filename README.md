@@ -1,4 +1,4 @@
-# StoryGPT-V
+# LLavis
 
 Official PyTorch implementation for the paper
 
