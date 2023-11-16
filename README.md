@@ -2,7 +2,7 @@
 
 Official PyTorch implementation for the paper
 
-> **Marrying Latent Diffusion and Language Model for Story Visualization**
+> **Large Language Models as Consistent Story Visualizer**
 
 ## :rocket: Get Started
 
