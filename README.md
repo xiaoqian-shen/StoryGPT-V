@@ -74,7 +74,7 @@ bash eval_llm.sh DATASET 1st_CKPT_PATH 2nd_CKPT_PATH
 - [x] Training code
 - [x] Evaluation code
 - [x] Finetuned BLIP2 checkpoints for Evaluation
-- [ ] Model checkpoints
+- [x] Model checkpoints
 - [ ] Datasets
 
 ## :closed_book: Reference
