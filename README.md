@@ -4,7 +4,7 @@ Environment Setup
 
 ```
 conda env create -f environment.yaml
-conda activate StoryVL
+conda activate story
 ```
 
 External Package
