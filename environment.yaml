@@ -1,4 +1,4 @@
-name: StoryVL
+name: story
 channels:
   - pytorch
   - defaults
