@@ -1,9 +1,3 @@
-# LLavis
-
-Official PyTorch implementation for the paper
-
-> **Large Language Models as Consistent Story Visualizer**
-
 ## :rocket: Get Started
 
 Environment Setup
