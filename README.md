@@ -42,7 +42,7 @@ bash scripts/clip.sh DATASET CKPT_PATH
 Second Stage: Align LLM with Char-LDM, you can choose [OPT](https://huggingface.co/facebook/opt-6.7b) or [Llama2](https://huggingface.co/meta-llama/Llama-2-7b-chat)
 
 ```
-bash scripts/train_gill.sh DATASET LLM_CKPT
+bash scripts/train_llm.sh DATASET LLM_CKPT
 ```
 
 ## :three: Inference
