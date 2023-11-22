@@ -4,9 +4,10 @@ current_hour=$(date +%H)
 run_time="${current_month}-${current_day}-${current_hour}"
 
 DATASET=$1
+llm_model=$2
 
 python -u train_gill.py \
-    --exp-name ${run_time}_${DATASET_NAME}_interleave_ft_fuse_vis16 --log-base-dir='logs/gill/' \
+    --exp-name ${run_time}_${DATASET_NAME}_interleave_fuse --log-base-dir='logs/gill/' \
     --precision='bf16'  --print-freq=100 --batch-size=64  --val-batch-size=64 \
     --dataset-dir data/${DATASET} \
     --dataset ${DATASET}\
@@ -16,5 +17,5 @@ python -u train_gill.py \
     --clip_emb_file clip_emb_img.pkl \
     --num-tokens 8 \
     --interleave \
-    --resume checkpoints/gill_opt/pretrained_ckpt.pth.tar \
+    --llm_model ${llm_model} \
     
