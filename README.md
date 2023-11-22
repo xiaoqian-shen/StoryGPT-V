@@ -27,7 +27,7 @@ Download dataset and put them under `data/flintstones` and `data/pororo`
 
 ## :two: Training
 
-First Stage: Latend Diffusion Finetune
+First Stage: Char-LDM
 
 ```
 bash scripts/train_ldm.sh DATASET
@@ -39,10 +39,10 @@ Prepare CLIP embedding after first stage
 bash scripts/clip.sh DATASET CKPT_PATH
 ```
 
-Second Stage: Align LLM with Latent Diffusion
+Second Stage: Align LLM with Char-LDM, you can choose [OPT](https://huggingface.co/facebook/opt-6.7b) or [Llama2](https://huggingface.co/meta-llama/Llama-2-7b-chat)
 
 ```
-bash scripts/train_gill.sh DATASET
+bash scripts/train_gill.sh DATASET LLM_Model
 ```
 
 ## :three: Inference
