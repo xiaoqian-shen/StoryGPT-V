@@ -42,7 +42,7 @@ bash scripts/clip.sh DATASET CKPT_PATH
 Second Stage: Align LLM with Latent Diffusion
 
 ```
-bash train_gill.sh DATASET
+bash scripts/train_gill.sh DATASET
 ```
 
 ## :three: Inference
@@ -57,10 +57,10 @@ PororoSV: [[First Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo
 
 ```
 # First Stage Evaluation
-bash eval.sh DATASET 1st_CKPT_PATH
+bash scripts/eval.sh DATASET 1st_CKPT_PATH
 
 # Second Stage Evaluation
-bash eval_llm.sh DATASET 1st_CKPT_PATH 2nd_CKPT_PATH
+bash scripts/eval_llm.sh DATASET 1st_CKPT_PATH 2nd_CKPT_PATH
 ```
 
 ## TODO
@@ -69,7 +69,6 @@ bash eval_llm.sh DATASET 1st_CKPT_PATH 2nd_CKPT_PATH
 - [x] Evaluation code
 - [x] Finetuned BLIP2 checkpoints for Evaluation
 - [x] Model checkpoints
-- [ ] Datasets
 
 ## :closed_book: Reference
 
