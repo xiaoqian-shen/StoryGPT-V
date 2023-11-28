@@ -31,8 +31,6 @@ accelerate launch \
     --ref_image 'same' \
     --gill_ckpt ${GILL_CKPT} \
     --interleave \
-    # --story_len 50 \
-    # --display_cap
 
 cd eval
 
