@@ -264,8 +264,6 @@ class PororoStoryDataset(Dataset):
         for i in range(select_idx):
             if self.args.interleave:
                 caption += ' Image: <img><ImageHere></img> ' + 'Caption: ' + captions[i]
-            else:
-                caption += ' Caption: ' + captions[i]
         caption += ' Caption: ' + captions[select_idx] + ' Image: '
 
         for i in range(self.num_tokens):

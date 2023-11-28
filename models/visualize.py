@@ -21,6 +21,7 @@ import itertools
 import os
 import pickle
 import random
+from collections import defaultdict
 
 @torch.no_grad()
 def main():
@@ -93,7 +94,6 @@ def main():
     data = json.load(open(f'{args.dataset_name}/cleaned_annotations.json','r'))
     
     demo_dataset = EvalDataset(
-            test_reference_folder=args.test_reference_folder,
             tokenizer=tokenizer,
             object_transforms=object_transforms,
             device=accelerator.device,
@@ -101,9 +101,10 @@ def main():
             root=args.dataset_name,
             ref_image=args.ref_image
         )
-    check_list=['s_05_e_24_shot_003586_003660','s_04_e_26_shot_011957_012031','s_02_e_31_shot_044649_044723','s_04_e_26_shot_002627_002701','s_02_e_31_shot_005758_005832',
-    's_04_e_26_shot_008863_008937','s_03_e_28_shot_042480_042554','s_03_e_28_shot_016494_016568','s_05_e_23_shot_020328_020402','s_05_e_22_shot_026387_026461','s_01_e_23_shot_003032_003106']
-    # check_list=['s_04_e_26_shot_008863_008937']
+    check_list=['s_04_e_26_shot_008863_008937','s_03_e_28_shot_042480_042554','s_05_e_22_shot_026387_026461','s_02_e_31_shot_044649_044723',
+                's_03_e_23_shot_018865_018939','s_02_e_13_shot_040511_040585','s_02_e_16_shot_029104_029178','s_04_e_15_shot_008125_008199',
+                's_02_e_30_shot_004004_004078','s_02_e_14_shot_033088_033162','s_05_e_24_shot_003784_003858','s_05_e_25_shot_004385_004459',
+                's_01_e_21_shot_031742_031816','s_04_e_12_shot_020570_020644','s_01_e_23_shot_019129_019203']
     for image_id in tqdm(check_list):
         caption=data[image_id]['caption']
         segments=data[image_id]['segments']
@@ -126,10 +127,6 @@ def main():
         prompt=' '.join(inserted_tokens)
         print(args.ref_image, image_id, prompt, flush=True)
         prompt_text_only = prompt.replace(unique_token, "")
-
-        # image_ids = os.listdir(args.test_reference_folder)
-        # print(f"Image IDs: {image_ids}")
-        # demo_dataset.set_image_ids(image_ids)
 
         batch = demo_dataset.get_data(prompt, char_names, image_id)
 
@@ -184,19 +181,24 @@ def main():
                         prompt_embeds_text_only=encoder_hidden_states_text_only,
                         start_merge_step=args.start_merge_step,
                     ).images
+
+                    output_dir = os.path.join(args.output_dir, image_id)
+                    os.makedirs(output_dir, exist_ok=True)
+
+                    caption = ' '.join(caption.split(' '))
                     heat_map = tc.compute_global_heat_map(prompt=caption)
                     words = list(set([segment['word'] for segment in segments]))
                     words = caption.split(' ')
-                    images[0].save(f'{args.output_dir}/{image_id}.png')
-                    for word in words:
+                    images[0].save(f'{output_dir}/{image_id}.png')
+                    word_dict = defaultdict(int)
+
+                    for word_idx, word in enumerate(words):
                         try:
                             word_heat_maps = heat_map.compute_word_heat_map(word)
-                            for idx, word_heat_map in enumerate(word_heat_maps):
-                                if word == 'wilma' and idx % 2 == 0:
-                                    continue
-                                if word == 'wilma':
-                                    idx = idx // 2
-                                word_heat_map.plot_overlay(images[0], word_idx=idx, caption=caption, out_file=f'{args.output_dir}/{image_id}_{idx}_{word}.png')
+                            heat_map_index = word_dict[word] + 1 if word.lower() == 'wilma' else word_dict[word]
+                            word_heat_map = word_heat_maps[heat_map_index]
+                            word_dict[word] += 1
+                            word_heat_map.plot_overlay(images[0], caption=caption, out_file=f'{output_dir}/{image_id}_{word_idx:02d}_{word}.png')
                         except:
                             continue
         # break

@@ -670,7 +670,7 @@ def parse_args(default=False):
     parser.add_argument(
         "--gill_ckpt",
         type=str,
-        default="/home/shenx/projects/diffstory/checkpoints/08-30-13_gen_ft_fuse"
+        required=True,
     )
 
     parser.add_argument(

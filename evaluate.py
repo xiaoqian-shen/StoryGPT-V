@@ -30,29 +30,6 @@ def main():
     accelerator = Accelerator(
         mixed_precision=args.mixed_precision,
     )
-
-    char_label = pickle.load(open(os.path.join(args.dataset_name, 'labels.pkl'), 'rb'))
-
-    if args.dataset == 'flintstones':
-        eval_char_cls, input_size = eval_cls.initialize_model(model_name='inception', num_classes=7)
-        eval_bg_cls, input_size = eval_cls.initialize_model(model_name='inception', num_classes=323)
-        eval_char_cls = eval_char_cls.to(accelerator.device)
-        eval_bg_cls = eval_bg_cls.to(accelerator.device)
-        eval_char_cls.load_state_dict(torch.load(os.path.join(args.dataset_name, 'classifier_char.pt')))
-        eval_bg_cls.load_state_dict(torch.load(os.path.join(args.dataset_name, 'classifier_bg.pt')))
-        bg_label = pickle.load(open(os.path.join(args.dataset_name, 'labels_bg.pkl'), 'rb'))['label']
-    else:
-        eval_char_cls, input_size = eval_cls.initialize_model(model_name='inception', num_classes=9)
-        eval_char_cls.load_state_dict(torch.load(os.path.join(args.dataset_name, 'classifier_char.pt')))
-        eval_char_cls = eval_char_cls.to(accelerator.device)
-    
-    transform = transforms.Compose([
-        transforms.Resize(input_size),
-        transforms.CenterCrop(input_size),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-    ])
-
     # Handle the repository creation
     if accelerator.is_main_process:
         if args.output_dir is not None:
@@ -176,24 +153,16 @@ def main():
                 char_names = []
                 inserted_tokens = tokens
             prompt=' '.join(inserted_tokens)
-            # print(args.ref_image, image_id, prompt, flush=True)
             prompt_text_only = prompt.replace(unique_token, "")
-
-            # image_ids = os.listdir(args.test_reference_folder)
-            # print(f"Image IDs: {image_ids}")
-            # demo_dataset.set_image_ids(image_ids)
 
             os.makedirs(args.output_dir, exist_ok=True)
 
             batch = demo_dataset.get_data(prompt, char_names, image_id)
 
             input_ids = batch["input_ids"].to(accelerator.device)
-            text = tokenizer.batch_decode(input_ids)[0]
-            
-            # print(input_ids)
+
             image_token_mask = batch["image_token_mask"].to(accelerator.device)
 
-            # print(image_token_mask)
             all_object_pixel_values = (
                 batch["object_pixel_values"].unsqueeze(0).to(accelerator.device)
             )

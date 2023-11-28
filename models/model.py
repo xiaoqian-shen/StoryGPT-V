@@ -6,7 +6,6 @@ import torch.nn.functional as F
 from typing import Any, Optional, Tuple, Union, Dict, List
 from transformers.modeling_outputs import BaseModelOutputWithPooling
 from transformers.models.clip.modeling_clip import (
-    _expand_mask,
     CLIPTextTransformer,
     CLIPPreTrainedModel,
     CLIPModel,
@@ -151,9 +150,36 @@ class FuseModule(nn.Module):
 
         return text_object_embeds
 
+def _make_causal_mask(
+    input_ids_shape: torch.Size, dtype: torch.dtype, device: torch.device, past_key_values_length: int = 0
+):
+    """
+    Make causal mask used for bi-directional self-attention.
+    """
+    bsz, tgt_len = input_ids_shape
+    mask = torch.full((tgt_len, tgt_len), torch.finfo(dtype).min, device=device)
+    mask_cond = torch.arange(mask.size(-1), device=device)
+    mask.masked_fill_(mask_cond < (mask_cond + 1).view(mask.size(-1), 1), 0)
+    mask = mask.to(dtype)
+
+    if past_key_values_length > 0:
+        mask = torch.cat([torch.zeros(tgt_len, past_key_values_length, dtype=dtype, device=device), mask], dim=-1)
+    return mask[None, None, :, :].expand(bsz, 1, tgt_len, tgt_len + past_key_values_length)
+
+def _expand_mask(mask: torch.Tensor, dtype: torch.dtype, tgt_len: Optional[int] = None):
+    """
+    Expands attention_mask from `[bsz, seq_len]` to `[bsz, 1, tgt_seq_len, src_seq_len]`.
+    """
+    bsz, src_len = mask.size()
+    tgt_len = tgt_len if tgt_len is not None else src_len
+
+    expanded_mask = mask[:, None, None, :].expand(bsz, 1, tgt_len, src_len).to(dtype)
+
+    inverted_mask = 1.0 - expanded_mask
+
+    return inverted_mask.masked_fill(inverted_mask.to(torch.bool), torch.finfo(dtype).min)
 
 class CustomTextEncoder(CLIPPreTrainedModel):
-    _build_causal_attention_mask = CLIPTextTransformer._build_causal_attention_mask
 
     @staticmethod
     def from_pretrained(model_name_or_path, **kwargs):
@@ -196,9 +222,9 @@ class CustomTextEncoder(CLIPPreTrainedModel):
         hidden_states = self.embeddings(input_ids)
 
         bsz, seq_len = input_shape
-        causal_attention_mask = self._build_causal_attention_mask(
-            bsz, seq_len, hidden_states.dtype
-        ).to(hidden_states.device)
+        causal_attention_mask = _make_causal_mask(
+            input_shape, hidden_states.dtype, hidden_states.device
+        )
 
         # expand attention_mask
         if attention_mask is not None:
@@ -282,7 +308,6 @@ def unet_store_cross_attention_scores(unet, attention_scores, layers=5):
 
     return unet
 
-
 class RegL1Loss(nn.Module):
     def __init__(self, threshold=1.0, normalize=False):
         super().__init__()
@@ -290,6 +315,9 @@ class RegL1Loss(nn.Module):
         self.normalize = normalize
 
     def forward(self, object_token_attn_prob, object_segmaps):
+        """
+        object_token_attn_prob: (b, num_heads, num_noise_latents, max_num_objects)
+        """
         if self.normalize:
             object_token_attn_prob = object_token_attn_prob / (
                 object_token_attn_prob.max(dim=2, keepdim=True)[0] + 1e-5
@@ -305,7 +333,6 @@ class RegL1Loss(nn.Module):
         object_loss = (object_token_attn_prob * object_segmaps).sum(
             dim=2
         ) / object_segmaps_sum
-
         return background_loss - object_loss
 
 def get_reg_loss_layer(
@@ -478,7 +505,7 @@ class StoryModel(nn.Module):
 
         # (bsz, max_num_objects, num_image_tokens, dim)
         object_embeds = self.image_encoder(object_pixel_values)
-
+        
         # (bsz, seq_len, dim)
         encoder_hidden_states = self.text_encoder(input_ids)[0]  # (bsz, seq_len, dim)
 

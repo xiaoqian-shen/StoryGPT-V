@@ -42,13 +42,17 @@ def plot_overlay_heat_map(im, heat_map, word=None, out_file=None, crop=None, col
         # im = torch.cat((im, (1 - heat_map.unsqueeze(-1))), dim=-1)
         # plt_.imshow(im)
 
-        if word is not None:
-            if ax is None:
-                caption = '\n'.join(caption.split('.'))
-                plt.title(f'{word}_{word_idx} \n {caption}')
-                plt.axis('off')
-            else:
-                ax.set_title(word)
+        # if word is not None:
+        #     if ax is None:
+        #         caption = '\n'.join(caption.split('.'))
+        #         plt.title(f'{word}_{word_idx} \n {caption}')
+        #         plt.axis('off')
+        #     else:
+        #         ax.set_title(word)
+        if caption is not None:
+             caption = '\n'.join(caption.split('.'))
+             plt.title(f'{word} \n {caption}')
+        plt.axis('off')
 
         if out_file is not None:
             plt.savefig(out_file)

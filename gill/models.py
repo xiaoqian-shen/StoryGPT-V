@@ -1,6 +1,5 @@
 from typing import List, Optional
 from collections import namedtuple
-from diffusers import StableDiffusionPipeline
 import json
 import numpy as np
 import os
@@ -14,15 +13,18 @@ from PIL import Image, UnidentifiedImageError
 from requests.exceptions import ConnectionError
 
 from transformers import AutoTokenizer, AutoModel, CLIPVisionModel, OPTForCausalLM
+from transformers.models.llama.modeling_llama import LlamaForCausalLM
 from gill import utils
 from gill import layers
 from gill import losses as losses_utils
+
+import random
 
 
 class GILLArgs:
     freeze_lm: bool = True
     freeze_vm: bool = True
-    opt_version: str = 'facebook/opt-6.7b'
+    llm_model: str = 'facebook/opt-6.7b'
     visual_encoder: str = 'openai/clip-vit-large-patch14'
     n_visual_tokens: int = 1
     task: str = 'captioning'
@@ -48,18 +50,20 @@ class GILLModel(nn.Module):
         self.num_tokens = args.num_tokens
         self.num_clip_tokens = args.num_clip_tokens
 
-        opt_version = args.opt_version
+        llm_model = args.llm_model
         visual_encoder = args.visual_encoder
         n_visual_tokens = args.n_visual_tokens
-        print(f"Using {opt_version} for the language model.")
+        print(f"Using {llm_model} for the language model.")
         print(f"Using {visual_encoder} for the visual model with {n_visual_tokens} visual tokens.")
 
-        if 'facebook/opt' in opt_version:
-            self.lm = OPTForCausalLM.from_pretrained(opt_version)
+        if 'facebook/opt' in llm_model:
+            self.lm = OPTForCausalLM.from_pretrained(llm_model)
+        elif 'llama' in llm_model:
+            self.lm = LlamaForCausalLM.from_pretrained(llm_model, torch_dtype=torch.float16)
         else:
             raise NotImplementedError
 
-        self.opt_version = opt_version
+        self.llm_model = llm_model
 
         if self.args.freeze_lm:
             self.lm.eval()
@@ -101,9 +105,11 @@ class GILLModel(nn.Module):
         self.gen_text_hidden_fcs = nn.ModuleList([])
 
         for layer_idx in self.args.text_emb_layers:
-            if (layer_idx == -1 or layer_idx == self.lm.config.num_hidden_layers) and ('bert' not in opt_version):
-                if 'opt' in opt_version:  # OPT models
+            if layer_idx == -1 or layer_idx == self.lm.config.num_hidden_layers:
+                if 'opt' in llm_model:  # OPT models
                     in_dim = self.lm.config.word_embed_proj_dim
+                elif 'llama' in llm_model:
+                    in_dim = self.lm.config.hidden_size
                 else:
                     raise NotImplementedError
 
@@ -375,7 +381,6 @@ class GILLModel(nn.Module):
 
     def generate(self, embeddings=torch.FloatTensor, max_len: int = 32,
                  temperature: float = 0.0, top_p: float = 1.0, min_word_tokens: int = 0,
-                 ret_scale_factor: float = 1.0, gen_scale_factor: float = 1.0,
                  filter_value: float = -float('Inf')):
         """Runs greedy decoding and returns generated captions.
 
@@ -416,12 +421,9 @@ class GILLModel(nn.Module):
                         logits[:, self.retrieval_token_idx] = filter_value
                         logits[:, self.gen_token_idx] = filter_value
                     else:
-                        # Multiply by scaling factor.
-                        if ret_scale_factor > 1:
-                            logits[:, self.retrieval_token_idx[0]] = logits[:, self.retrieval_token_idx[
-                                                                                   0]].abs() * ret_scale_factor
-                        if gen_scale_factor > 1:
-                            logits[:, self.gen_token_idx[0]] = logits[:, self.gen_token_idx[0]].abs() * gen_scale_factor
+                        mask = torch.ones_like(logits, dtype=torch.bool, device=logits.device)
+                        mask[:, self.retrieval_token_idx] = False
+                        logits[mask] = filter_value
 
                 if temperature == 0.0:
                     if top_p != 1.0:
@@ -471,42 +473,19 @@ class GILLModel(nn.Module):
 
 
 class GILL(nn.Module):
-    def __init__(self, tokenizer, model_args: Optional[GILLArgs] = None,
-                 path_array: Optional[List[str]] = None, emb_matrix: Optional[torch.tensor] = None,
-                 load_sd: bool = False, num_gen_images: int = 1, decision_model_path: Optional[str] = None):
+    def __init__(self, tokenizer, model_args: Optional[GILLArgs] = None, num_gen_images: int = 1):
         super().__init__()
         self.model = GILLModel(tokenizer, model_args)
-        self.path_array = path_array
-        self.emb_matrix = emb_matrix
-        self.load_sd = load_sd
         self.num_gen_images = num_gen_images
         self.idx2dec = {0: 'gen', 1: 'ret', 2: 'same'}
-        self.decision_model = None
-
-        # Load the Stable Diffusion model.
-        if load_sd:
-            model_id = "runwayml/stable-diffusion-v1-5"
-            self.sd_pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to("cuda")
-
-        if decision_model_path is not None and os.path.exists(decision_model_path):
-            print('Loading decision model...')
-            self.decision_model = nn.Sequential(*[
-                nn.Dropout(0.5),
-                nn.Linear(4096, 2),
-            ])
-            mlp_checkpoint = torch.load(decision_model_path)
-            self.decision_model.load_state_dict(mlp_checkpoint['state_dict'], strict=True)
-            self.decision_model.eval()
 
     def __call__(self, images: Tensor, tgt_tokens: Optional[Tensor] = None, caption_len: Optional[Tensor] = None,
                  generate: bool = False, num_words: int = 32, temperature: float = 1.0, top_p: float = 1.0,
-                 ret_scale_factor: float = 1.0, gen_scale_factor: float = 1.0,
                  min_word_tokens: int = 0, mode: str = 'captioning', concat_captions: bool = False,
                  input_prefix: Optional[str] = None, captions=None) -> Tensor:
         if generate:
             return self.model.generate(images, num_words, temperature=temperature, top_p=top_p,
-                                       min_word_tokens=min_word_tokens, ret_scale_factor=ret_scale_factor,
-                                       gen_scale_factor=gen_scale_factor)
+                                       min_word_tokens=min_word_tokens)
         else:
             output = self.model(
                 pixel_values=images,
@@ -519,10 +498,9 @@ class GILL(nn.Module):
             return output
 
     def generate_for_images_emb(
-            self, prompts: List, num_words: int = 0, min_word_tokens: int = 0, ret_scale_factor: float = 1.0,
-            gen_scale_factor: float = 1.0,
+            self, prompts: List, num_words: int = 0, min_word_tokens: int = 0,
             top_p: float = 1.0, temperature: float = 0.0, max_num_rets: int = 1, generator=None,
-            always_add_bos: bool = False, guidance_scale: float = 7.5, num_inference_steps: int = 50, emb_matrix=None):
+            always_add_bos: bool = False):
         """
         Encode prompts into embeddings, and generates text and image outputs accordingly.
 
@@ -530,7 +508,6 @@ class GILL(nn.Module):
           prompts: List of interleaved PIL.Image.Image and strings representing input to the model.
           num_words: Maximum number of words to generate for. If num_words = 0, the model will run its forward pass and return the outputs.
           min_word_tokens: Minimum number of actual words before generating an image.
-          ret_scale_factor: Proportion to scale [IMG] token logits by. A higher value may increase the probability of the model generating [IMG] outputs.
           top_p: If set to < 1, the smallest set of tokens with highest probabilities that add up to top_p or higher are kept for generation.
           temperature: Used to modulate logit distribution.
           max_num_rets: Maximum number of images to return in one generation pass.
@@ -573,9 +550,8 @@ class GILL(nn.Module):
             elif num_words > 0:
                 generated_ids, generated_embeddings, _ = self.model.generate(input_embs, num_words,
                                                                              min_word_tokens=min_word_tokens,
-                                                                             temperature=temperature, top_p=top_p,
-                                                                             ret_scale_factor=ret_scale_factor,
-                                                                             gen_scale_factor=gen_scale_factor)
+                                                                             temperature=temperature, top_p=top_p)
+                
                 embeddings = generated_embeddings[-1][:, input_embs.shape[1]:]
                 # Truncate to newline.
                 newline_token_id = self.model.tokenizer('\n', add_special_tokens=False).input_ids[0]
@@ -584,9 +560,9 @@ class GILL(nn.Module):
                     if generated_ids[0, j] == newline_token_id:
                         trunc_idx = j
                         break
-                if trunc_idx > 0:
-                    generated_ids = generated_ids[:, :trunc_idx]
-                    embeddings = embeddings[:, :trunc_idx]
+                # if trunc_idx > 0:
+                #     generated_ids = generated_ids[:, :trunc_idx]
+                #     embeddings = embeddings[:, :trunc_idx]
             else:
                 raise ValueError
 
@@ -595,13 +571,14 @@ class GILL(nn.Module):
             # Find up to max_num_rets [IMG] tokens, and their corresponding scores.
             all_ret_idx = [i for i, x in enumerate(generated_ids[0, :] == self.model.retrieval_token_idx[0]) if x][
                           :max_num_rets]
-            seen_image_idx = []  # Avoid showing the same image multiple times.
 
             if len(all_ret_idx) == 0:
                 # No [IMG] tokens.
                 caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
                 return_outputs.append(utils.truncate_caption(caption))
             else:
+                caption = self.model.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+                # caption = utils.truncate_caption(caption)
                 for ret_idx in all_ret_idx:
                     assert generated_ids[0,
                            ret_idx:ret_idx + self.model.num_tokens].cpu().detach().numpy().tolist() == self.model.retrieval_token_idx, (
@@ -623,6 +600,7 @@ class GILL(nn.Module):
                                                          return_tensors="pt").input_ids.to(
                         self.model.logit_scale.device)
                     gen_prefix_embs = self.model.input_embeddings(gen_prefx_ids)  # (1, T, D)
+                    
                     gen_emb = self.model.gen_text_hidden_fcs[0](raw_emb, gen_prefix_embs)  # (1, 77, 768)
 
                     if gen_emb.shape[1] != 77:
@@ -637,7 +615,7 @@ class GILL(nn.Module):
 
                     gen_emb = gen_emb.repeat(self.num_gen_images, 1, 1)  # (self.num_gen_images, 77, 768)
 
-        return gen_emb
+        return gen_emb, caption
 
     def get_log_likelihood_scores(
             self, prompts: List):
@@ -686,42 +664,28 @@ class GILL(nn.Module):
         return -outputs.loss.item()
 
 
-def load_gill(model_dir: str, load_ret_embs: bool = True, decision_model_fn: str = 'decision_model.pth.tar',
-              device='cuda') -> GILL:
+def load_gill(model_dir: str, device='cuda') -> GILL:
     model_args_path = os.path.join(model_dir, 'model_args.json')
     model_ckpt_path = os.path.join(model_dir, 'pretrained_ckpt.pth.tar')
-    embs_paths = [s for s in glob.glob(os.path.join(model_dir, 'cc3m*.npy'))]
 
     if not os.path.exists(model_args_path):
         raise ValueError(f'model_args.json does not exist in {model_dir}.')
     if not os.path.exists(model_ckpt_path):
         raise ValueError(f'pretrained_ckpt.pth.tar does not exist in {model_dir}.')
-    if not load_ret_embs or len(embs_paths) == 0:
-        path_array, emb_matrix = None, None
-    else:
-        # Load embeddings.
-        # Construct embedding matrix for nearest neighbor lookup.
-        path_array = []
-        emb_matrix = []
-
-        # These were precomputed for all CC3M images with `model.get_visual_embs(image, mode='retrieval')`.
-        for p in embs_paths:
-            with open(p, 'rb') as wf:
-                train_embs_data = pkl.load(wf)
-                path_array.extend(train_embs_data['paths'])
-                emb_matrix.extend(train_embs_data['embeddings'])
-        emb_matrix = np.stack(emb_matrix, axis=0)
-
-        # Number of paths should be equal to number of embeddings.
-        assert len(path_array) == emb_matrix.shape[0], (len(path_array), emb_matrix.shape)
 
     with open(model_args_path, 'r') as f:
         model_kwargs = json.load(f)
 
     # Initialize tokenizer.
-    tokenizer = AutoTokenizer.from_pretrained(model_kwargs['opt_version'], use_fast=False)
+    tokenizer = AutoTokenizer.from_pretrained(model_kwargs['llm_model'], use_fast=False)
+    llm_model = model_kwargs['llm_model']
     if tokenizer.pad_token is None:
-        tokenizer.pad_token_id = tokenizer.eos_token_id
+        if llm_model in ['EleutherAI/gpt-j-6B']:
+            tokenizer.pad_token = tokenizer.eos_token
+        elif llm_model.__contains__('llama'):
+            tokenizer.pad_token = "$$"
+        else:
+            tokenizer.pad_token_id = tokenizer.eos_token_id
     # Add an image token for loss masking (and visualization) purposes.
     tokenizer.add_special_tokens({"cls_token": "<|image|>"})  # add special image token to tokenizer
 
@@ -740,15 +704,8 @@ def load_gill(model_dir: str, load_ret_embs: bool = True, decision_model_fn: str
 
     args = namedtuple('args', model_kwargs)(**model_kwargs)
 
-    # Load decision model.
-    if decision_model_fn is not None:
-        decision_model_path = os.path.join(model_dir, decision_model_fn)
-    else:
-        decision_model_path = None
-
     # Initialize model for inference.
-    model = GILL(tokenizer, args, path_array=path_array, emb_matrix=emb_matrix,
-                 load_sd=True, num_gen_images=1, decision_model_path=decision_model_path)
+    model = GILL(tokenizer, args, num_gen_images=1)
     model = model.eval()
     model = model.bfloat16()
     model = model.to(device)
@@ -768,12 +725,5 @@ def load_gill(model_dir: str, load_ret_embs: bool = True, decision_model_fn: str
         if 'share_ret_gen' in model_kwargs:
             assert model_kwargs['share_ret_gen'], 'Model loading only supports share_ret_gen=True for now.'
         model.model.input_embeddings.weight[-model_kwargs['num_tokens']:, :].copy_(img_token_embeddings)
-
-    if load_ret_embs and len(embs_paths) > 0:
-        logit_scale = model.model.logit_scale.exp()
-        emb_matrix = torch.tensor(emb_matrix, dtype=logit_scale.dtype).to(logit_scale.device)
-        emb_matrix = emb_matrix / emb_matrix.norm(dim=1, keepdim=True)
-        emb_matrix = logit_scale * emb_matrix
-        model.emb_matrix = emb_matrix
 
     return model
