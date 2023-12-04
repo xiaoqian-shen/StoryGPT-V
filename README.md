@@ -51,7 +51,7 @@ First prepare finetuned weight of BLIP2 on FlintStonesSV and PororoSV. Finetune 
 
 Reproduce results using our model checkpoints:
 
-FlintStonesSV: [[First Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/first-stage/pytorch_model.bin) [[Second Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/second-stage.zip)
+FlintStonesSV: [[First Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/first-stage/pytorch_model.bin) [[Second Stage (opt)]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/second-stage-opt.zip) [[Second Stage (llama2)]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/second-stage-llama2.zip)
 
 PororoSV: [[First Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/first-stage/pytorch_model.bin) [[Second Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/second-stage.zip)
 
