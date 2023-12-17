@@ -670,7 +670,7 @@ def parse_args(default=False):
     parser.add_argument(
         "--gill_ckpt",
         type=str,
-        required=True,
+        default="YOUR 2nd CKPT",
     )
 
     parser.add_argument(
