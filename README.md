@@ -55,6 +55,8 @@ FlintStonesSV: [[First Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/f
 
 PororoSV: [[First Stage]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/first-stage/pytorch_model.bin) [[Second Stage (OPT)]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/second-stage.zip)
 
+To use Llama2, please first download the Llama2 checkpoints from [Llama2](https://huggingface.co/meta-llama/Llama-2-7b-chat). Then, in the 2nd checkpoints folder we provided, update the "llm_model" field in both `args.json` and `model_args.json` to the path of your local Llama2 folder.
+
 ```
 # First Stage Evaluation
 bash scripts/eval.sh DATASET 1st_CKPT_PATH
