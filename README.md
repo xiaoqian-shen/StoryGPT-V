@@ -21,9 +21,9 @@ cp -r lavis eval/lavis
 
 Download dataset and put them under `data/flintstones` and `data/pororo`
 
-[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf): [[Download]](https://storygpt-v.s3.amazonaws.com/data/flintstones/)
+[FlintstonesSV](https://arxiv.org/pdf/1804.03608.pdf): `aws s3 cp s3://storygpt-v/data/flintstones/ data/flintstones/ --recursive`
 
-[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf): [[Download]](https://storygpt-v.s3.amazonaws.com/data/pororo/)
+[PororoSV](https://openaccess.thecvf.com/content_CVPR_2019/papers/Li_StoryGAN_A_Sequential_Conditional_GAN_for_Story_Visualization_CVPR_2019_paper.pdf): `aws s3 cp s3://storygpt-v/data/pororo/ data/pororo/ --recursive`
 
 ## :two: Training
 
