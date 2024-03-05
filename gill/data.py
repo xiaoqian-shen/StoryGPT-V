@@ -80,6 +80,7 @@ class StoryDataset(Dataset):
         ref_flags = []
         captions = []
         images = []
+        raw_images = []
         for idx in range(len(globalIDs)):
             ref_flag = False
             globalID = globalIDs[idx]
@@ -116,6 +117,7 @@ class StoryDataset(Dataset):
             random_range = random.randrange(n_frames)
             image_array = video_array[random_range]
             img = Image.fromarray(image_array)
+            raw_images.append(torch.from_numpy(image_array).permute(2,0,1))
             images.append(utils.get_pixel_values_for_model(self.feature_extractor, img))
 
         select_idx = random.sample(range(1, len(captions)), 1)[0]
@@ -134,8 +136,9 @@ class StoryDataset(Dataset):
 
         clip_emb = self.clip_embs[image_id].squeeze()
         images = torch.stack(images, dim=0)
-
-        return image_id, images, caption, clip_emb
+        pred_image = raw_images[select_idx]
+        
+        return image_id, images, caption, clip_emb, pred_image
 
 
 def find_start_match(s1, s2):
