@@ -49,7 +49,7 @@ def validate(val_loader, model, tokenizer, criterion, epoch, args):
             all_text_features = []
 
             # for i, (image_paths, images, ret_tokens, ret_caption_len, gen_tokens, gen_caption_len, clip_emb) in tqdm.tqdm(enumerate(loader), position=0, total=len(loader)):
-            for i, (image_paths, images, captions, clip_emb) in tqdm.tqdm(enumerate(loader), position=0,
+            for i, (image_paths, images, captions, clip_emb, _) in tqdm.tqdm(enumerate(loader), position=0,
                                                                           total=len(loader)):
                 i = base_progress + i
 
