@@ -7,7 +7,7 @@ DATASET=$1
 llm_model=$2
 sd_model=$3
 
-python -u train_llm.py \
+python -u train_llm_v2.py \
     --exp-name ${run_time}_${DATASET_NAME}_interleave_fuse --log-base-dir='logs/gill/' \
     --precision='bf16'  --print-freq=100 --batch-size=32 --val-batch-size=64 \
     --dataset-dir data/${DATASET} \
