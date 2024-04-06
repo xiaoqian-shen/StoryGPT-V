@@ -49,7 +49,7 @@ bash scripts/train_llm_v2.sh DATASET LLM_CKPT 1st_CKPT_PATH
 
 First prepare finetuned weight of BLIP2 on FlintStonesSV and PororoSV. Finetune BLIP2 by yourself or use our provided finetuned checkpoint `captioner.pth` under each dataset folder: [[BLIP2 FlintStonesSV]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/eval/captioner.pth), [[BLIP2 PororoSV]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/eval/captioner.pth).
 
-We also provide the pretrained character or background classifier for evaluation. [[FlintStonesSV character]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/eval/classifier_char.pt) [[FlintStonesSV background]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/eval/classifier_bg.pt) [[PororoSV character]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/eval/classifier_char.pt)
+We also provide the pretrained character or background classifier for evaluation: [[FlintStonesSV character]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/eval/classifier_char.pt) [[FlintStonesSV background]](https://storygpt-v.s3.amazonaws.com/checkpoints/flintstones/eval/classifier_bg.pt) [[PororoSV character]](https://storygpt-v.s3.amazonaws.com/checkpoints/pororo/eval/classifier_char.pt).
 
 Reproduce results using our model checkpoints:
 
